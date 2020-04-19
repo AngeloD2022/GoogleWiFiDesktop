@@ -15,6 +15,7 @@ public:
     QString getApiToken(QString accessToken);
 private:
     QString accessToken;
+    QString deviceId = "INSERT_DEVICEID_HERE"
 };
 
 #endif // APIAUTHENTICATOR_H

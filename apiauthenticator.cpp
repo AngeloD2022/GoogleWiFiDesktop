@@ -25,7 +25,7 @@ QString ApiAuthenticator::getNewAccessToken(QString refreshToken){
 
 QString ApiAuthenticator::getApiToken(QString accessToken){
     QString base = "https://oauthaccountmanager.googleapis.com/v1/issuetoken";
-    QString params = "app_id=com.google.OnHub&client_id=586698244315-vc96jg3mn4nap78iir799fc2ll3rk18s.apps.googleusercontent.com&device_id=<USER_DEVICE_ID>&hl=en-US&lib_ver=3.3&response_type=token&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Faccesspoints%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclouddevices";
+    QString params = "app_id=com.google.OnHub&client_id=586698244315-vc96jg3mn4nap78iir799fc2ll3rk18s.apps.googleusercontent.com&device_id="+deviceId+"&hl=en-US&lib_ver=3.3&response_type=token&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Faccesspoints%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclouddevices";
 //    QEventLoop loop;
     QMap<QString,QString> headers;
     headers.insert("Authorization",QString("Bearer ")+accessToken);
