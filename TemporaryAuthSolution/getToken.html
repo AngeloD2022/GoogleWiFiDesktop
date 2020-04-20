@@ -18,8 +18,8 @@
     <h3>Step 2</h3>
     <p id="authuri">[URL]</p>
     <p>Copy the oauth_code after signing in using the URL.</p>
-    <p>You may need to disguise yourself as an IOS/Mac device by using the User-Agent header: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36</p>
-    <label for="auth_code_cookie">auth_code cookie:</label>
+    <p>You may need to disguise yourself as an IOS/Mac device by using the header: User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko)</p>
+    <label for="auth_code_cookie">oauth_code cookie:</label>
     <input id="auth_code_cookie" type="text">
     <button onclick="getToken()">Get refresh_token</button>
 </div>
