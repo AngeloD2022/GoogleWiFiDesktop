@@ -1,4 +1,4 @@
-QT       += core gui network charts
+QT       += core gui network charts webengine webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    OAuthClient/authdialog.cpp \
     apiauthenticator.cpp \
     devicesdialog.cpp \
     easyhttp.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
     wifiapi.cpp
 
 HEADERS += \
+    OAuthClient/authdialog.h \
     apiauthenticator.h \
     devicesdialog.h \
     easyhttp.h \
@@ -31,6 +33,7 @@ HEADERS += \
     wifiapi.h
 
 FORMS += \
+    OAuthClient/authdialog.ui \
     devicesdialog.ui \
     mainwindow.ui
 
