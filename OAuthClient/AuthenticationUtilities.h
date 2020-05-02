@@ -9,6 +9,10 @@
 class AuthenticationUtilities {
 public:
     static QString generateClientState();
+
+    static QString generateDeviceId();
+
+    static QString generateChallenge();
 };
 
 
