@@ -6,7 +6,9 @@ AuthDialog::AuthDialog(QWidget *parent) :
         QDialog(parent),
         ui(new Ui::AuthDialog) {
     ui->setupUi(this);
+    this->setFocus();
 
+    doLoginPageRequest();
 
 }
 
@@ -41,14 +43,16 @@ void AuthDialog::doLoginPageRequest() {
 
     QString data = QJsonDocument(dataObject).toJson();
 
+    qDebug() << data;
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    QNetworkAccessManager manager;
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
+    connect(manager, &QNetworkAccessManager::finished, this, &AuthDialog::loginPageRequestComplete);
+    manager->post(request, data.toUtf8());
 
-    connect(&manager, &QNetworkAccessManager::finished, this, &AuthDialog::loginPageRequestComplete);
 
-    manager.post(request, data.toUtf8());
-    manager.deleteLater();
+
+//    manager.deleteLater();
 }
 
 void AuthDialog::loginPageRequestComplete(QNetworkReply *reply) {
@@ -75,7 +79,7 @@ void AuthDialog::loginPageRequestComplete(QNetworkReply *reply) {
 
 
 void AuthDialog::launchWebEngine(QString authUri) {
-    ui->progressBar->hide();
+    ui->gridLayout->removeWidget(ui->progressBar);
     QWebEngineHttpRequest authRequest;
 
     // Disguise as Apple product...
@@ -83,7 +87,7 @@ void AuthDialog::launchWebEngine(QString authUri) {
                           "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko)");
 
     authRequest.setUrl(QUrl(authUri));
-    ui->gridLayout->addWidget(view);
+    ui->gridLayout->addWidget(view, 0, 0);
     view->load(authRequest);
     QWebEngineCookieStore *store = view->page()->profile()->cookieStore();
     store->loadAllCookies();
@@ -93,7 +97,8 @@ void AuthDialog::launchWebEngine(QString authUri) {
 void AuthDialog::cookieAdded(QNetworkCookie cookie) {
     if (cookie.name() == "oauth_code") {
         view->setDisabled(true);
-        ui->progressBar->show();
+
+        ui->gridLayout->addWidget(ui->progressBar, 1, 0);
 
         QString oauthCode = cookie.value();
 
@@ -101,9 +106,9 @@ void AuthDialog::cookieAdded(QNetworkCookie cookie) {
         QString data = "client_id=936475272427.apps.googleusercontent.com&code=" + oauthCode +
                        "&grant_type=authorization_code&scope=https%3A%2F%2Fwww.google.com%2Faccounts%2FOAuthLogin";
         request.setUrl(QUrl("https://www.googleapis.com/oauth2/v4/token"));
-        QNetworkAccessManager manager;
-        connect(&manager, &QNetworkAccessManager::finished, this, &AuthDialog::saveRefreshToken);
-        manager.post(request, data.toUtf8());
+        QNetworkAccessManager *manager = new QNetworkAccessManager();
+        connect(manager, &QNetworkAccessManager::finished, this, &AuthDialog::saveRefreshToken);
+        manager->post(request, data.toUtf8());
 
 
     }
@@ -124,22 +129,31 @@ void AuthDialog::saveRefreshToken(QNetworkReply *reply) {
             directory.mkpath(path);
 
         // Perform encryption.
-        QAESEncryption *aes = new QAESEncryption(QAESEncryption::AES_256, QAESEncryption::CFB, QAESEncryption::PKCS7);
+
+//    QAESEncryption *aes = new QAESEncryption(QAESEncryption::AES_256, QAESEncryption::AES_256, QAESEncryption::ISO);
         QString key = QSysInfo::machineUniqueId() +
                       QCryptographicHash::hash(QSysInfo::currentCpuArchitecture().toUtf8(), QCryptographicHash::Sha512);
-        QRandomGenerator64 random = QRandomGenerator64::securelySeeded();
-        int iv = random.bounded(999999999);
+//    QRandomGenerator64 random = QRandomGenerator64::securelySeeded();
 
-        QByteArray enc = aes->encode(refreshTkn.toUtf8(), key.toUtf8(), QByteArray::number(iv));
 
-        enc = enc.toBase64();
+        QString iv = QUuid::createUuid().toString();
+        qDebug() << "IV:" + iv;
+        qDebug() << "key:" + key;
+        QByteArray keyHash = QCryptographicHash::hash(key.toLocal8Bit(), QCryptographicHash::Sha256);
+        QByteArray ivHash = QCryptographicHash::hash(iv.toLocal8Bit(), QCryptographicHash::Md5);
+        QByteArray enc = QAESEncryption::Crypt(QAESEncryption::AES_256, QAESEncryption::CBC,
+                                               refreshTkn.toLocal8Bit(), keyHash, ivHash);
+        qDebug() << enc;
+        //enc = enc.toBase64();
         QJsonObject file;
-        file.insert("IV", iv);
+        file.insert("IV", QString(ivHash));
         file.insert("dat", QString(enc));
         // Create the new file.
-        QFile credentials(path + "/auth.bin");
+        QFile credentials("./gacc/auth.bin");
         credentials.open(QIODevice::WriteOnly);
         credentials.write(QJsonDocument(file).toJson());
         credentials.close();
+        emit authComplete(refreshTkn);
+        close();
     }
 }

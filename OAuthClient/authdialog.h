@@ -24,6 +24,9 @@ public:
 
     void doLoginPageRequest();
 
+signals:
+
+    void authComplete(QString refreshToken);
 
 private:
     QString deviceName = QSysInfo::machineHostName();
