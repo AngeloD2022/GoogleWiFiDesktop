@@ -18,12 +18,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     QFile auth("./gacc/auth.bin");
     if (auth.exists()) {
+
         auth.open(QIODevice::ReadOnly);
         QJsonObject obj = QJsonDocument::fromJson(auth.readAll()).object();
         auth.close();
+
         QByteArray iv = obj["IV"].toString().toUtf8();
-        QByteArray data = obj["dat"].toString().toLocal8Bit();
-//        data = QByteArray::fromBase64(data);
+        iv = QByteArray::fromBase64(iv);
+        QByteArray data = obj["dat"].toString().toUtf8();
+        data = QByteArray::fromBase64(data);
 
         QString key = QSysInfo::machineUniqueId() +
                       QCryptographicHash::hash(QSysInfo::currentCpuArchitecture().toUtf8(), QCryptographicHash::Sha512);
@@ -36,11 +39,6 @@ MainWindow::MainWindow(QWidget *parent)
         refreshToken = token;
 
         startApiService();
-    } else {
-//
-
-
-//        authdialog->show();
     }
 }
 

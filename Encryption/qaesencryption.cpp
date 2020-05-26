@@ -452,6 +452,8 @@ QByteArray QAESEncryption::printArray(uchar *arr, int size) {
 }
 
 QByteArray QAESEncryption::encode(const QByteArray &rawText, const QByteArray &key, const QByteArray &iv) {
+
+
     if (m_mode >= CBC && (iv.isNull() || iv.size() != m_blocklen))
         return QByteArray();
 

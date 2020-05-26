@@ -129,30 +129,31 @@ void AuthDialog::saveRefreshToken(QNetworkReply *reply) {
             directory.mkpath(path);
 
         // Perform encryption.
-
-//    QAESEncryption *aes = new QAESEncryption(QAESEncryption::AES_256, QAESEncryption::AES_256, QAESEncryption::ISO);
         QString key = QSysInfo::machineUniqueId() +
                       QCryptographicHash::hash(QSysInfo::currentCpuArchitecture().toUtf8(), QCryptographicHash::Sha512);
-//    QRandomGenerator64 random = QRandomGenerator64::securelySeeded();
 
 
         QString iv = QUuid::createUuid().toString();
+
         qDebug() << "IV:" + iv;
         qDebug() << "key:" + key;
+
         QByteArray keyHash = QCryptographicHash::hash(key.toLocal8Bit(), QCryptographicHash::Sha256);
         QByteArray ivHash = QCryptographicHash::hash(iv.toLocal8Bit(), QCryptographicHash::Md5);
         QByteArray enc = QAESEncryption::Crypt(QAESEncryption::AES_256, QAESEncryption::CBC,
                                                refreshTkn.toLocal8Bit(), keyHash, ivHash);
         qDebug() << enc;
-        //enc = enc.toBase64();
         QJsonObject file;
-        file.insert("IV", QString(ivHash));
-        file.insert("dat", QString(enc));
+
+        file.insert("IV", QTextCodec::codecForMib(106)->toUnicode(ivHash.toBase64()));
+        file.insert("dat", QTextCodec::codecForMib(106)->toUnicode(enc.toBase64()));
+
         // Create the new file.
         QFile credentials("./gacc/auth.bin");
         credentials.open(QIODevice::WriteOnly);
         credentials.write(QJsonDocument(file).toJson());
         credentials.close();
+
         emit authComplete(refreshTkn);
         close();
     }
