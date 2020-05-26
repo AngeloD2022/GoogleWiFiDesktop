@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Encryption/qaesencryption.cpp \
     OAuthClient/AuthenticationUtilities.cpp \
     OAuthClient/authdialog.cpp \
     apiauthenticator.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     wifiapi.cpp
 
 HEADERS += \
+    Encryption/qaesencryption.h \
     OAuthClient/AuthenticationUtilities.h \
     OAuthClient/authdialog.h \
     apiauthenticator.h \

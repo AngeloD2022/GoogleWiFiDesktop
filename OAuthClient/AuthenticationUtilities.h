@@ -5,7 +5,7 @@
 #ifndef ONHUBDESKTOP_AUTHENTICATIONUTILITIES_H
 #define ONHUBDESKTOP_AUTHENTICATIONUTILITIES_H
 
-
+#include <QString>
 class AuthenticationUtilities {
 public:
     static QString generateClientState();

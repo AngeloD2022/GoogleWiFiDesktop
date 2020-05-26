@@ -14,10 +14,11 @@ QT_CHARTS_USE_NAMESPACE
 int main(int argc, char *argv[])
 {
 
+    QtWebEngine::initialize();
     QApplication a(argc, argv);
 
     MainWindow w;
     w.show();
-    QtWebEngine::initialize();
+
     return a.exec();
 }

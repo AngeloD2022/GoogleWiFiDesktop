@@ -6,7 +6,9 @@
 //#include "HTTP/requestmanager.h"
 #include <QtNetwork>
 //#include <QtWebEngineCore>
-
+#include <QSysInfo>
+#include "AuthenticationUtilities.h"
+#include "Encryption/qaesencryption.h"
 
 namespace Ui {
     class AuthDialog;
@@ -22,14 +24,22 @@ public:
 
     void doLoginPageRequest();
 
-    void loginPageRequestComplete(QString reply);
-
 
 private:
-
+    QString deviceName = QSysInfo::machineHostName();
+    QString deviceId = AuthenticationUtilities::generateDeviceId();
+    QString deviceChallenge = AuthenticationUtilities::generateChallenge();
+    QString clientState = AuthenticationUtilities::generateClientState();
     Ui::AuthDialog *ui;
     QWebEngineView *view = new QWebEngineView();
 
+    void launchWebEngine(QString authUri);
+
+    void loginPageRequestComplete(QNetworkReply *reply);
+
+    void cookieAdded(QNetworkCookie cookie);
+
+    void saveRefreshToken(QNetworkReply *reply);
 };
 
 #endif // AUTHDIALOG_H
