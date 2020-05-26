@@ -1,0 +1,114 @@
+<style>
+    .step {
+        border: 2px solid lightgray;
+        border-radius: 4px;
+        margin: 6px;
+    }
+</style>
+<body>
+
+<div id="step1">
+    <h3>Step 1</h3>
+    <p>Create device name.</p>
+    <input id="devname"><br>
+    <button onclick="step2()">Next</button>
+</div>
+
+<div id="step2" style="display: none">
+    <h3>Step 2</h3>
+    <p id="authuri">[URL]</p>
+    <p>Copy the oauth_code after signing in using the URL.</p>
+    <p>You may need to disguise yourself as an IOS/Mac device by using the header: User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko)</p>
+    <label for="auth_code_cookie">oauth_code cookie:</label>
+    <input id="auth_code_cookie" type="text">
+    <button onclick="getToken()">Get refresh_token</button>
+</div>
+
+
+<script>
+    // from https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+    function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    // from https://stackoverflow.com/questions/10726909/random-alpha-numeric-string-in-javascript
+    function randomString(length) {
+        return Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1);
+    }
+
+
+    function step2() {
+        var devname = $("#devname").val();
+        $("#step2").show();
+
+        // Generate fake device ID
+        let uuid = uuidv4().toUpperCase();
+
+        // Random.org 76 bytes for b64 devicechallenge
+        var devicechallenge = "";
+        var clientstate = randomString(20) + "_" + randomString(36);
+        $.ajax({
+            url: "https://www.random.org/cgi-bin/randbyte?nbytes=76&format=h",
+            type: 'GET'
+        }).done(function(response){
+            devicechallenge = btoa(response.replace(/\s/g, "")).replace(/\+/g, "-");
+            doAuthAdvice(devname,uuid,devicechallenge,clientstate)
+
+        })
+
+
+    }
+
+
+    function doAuthAdvice(devname,uuid,devicechallenge,clientstate){
+        $.ajax(
+            {
+                type: "POST",
+                url: "https://oauthaccountmanager.googleapis.com/v1/authadvice",
+                dataType: "json",
+                data:
+                    {
+                        "external_browser": "true",
+                        "report_user_id": "true",
+                        "system_version": "13.4",
+                        "app_version": "2.16.1",
+                        "user_id": [],
+                        "safari_authentication_session": "true",
+                        "supported_service": [],
+                        "request_trigger": "ADD_ACCOUNT",
+                        "lib_ver": "3.3",
+                        "package_name": "com.google.OnHub",
+                        "redirect_uri": "com.google.sso.586698244315-vc96jg3mn4nap78iir799fc2ll3rk18s:/authCallback",
+                        "device_name": devname,
+                        "client_id": "586698244315-vc96jg3mn4nap78iir799fc2ll3rk18s.apps.googleusercontent.com",
+                        "mediator_client_id": "936475272427.apps.googleusercontent.com",
+                        "device_id": uuid,
+                        "hl": "en-US",
+                        "device_challenge_request": devicechallenge,
+                        "client_state": clientstate
+                    },
+
+
+            }
+        ).done(function(response){
+            $("#authuri").text(response["uri"])
+        });
+
+    }
+
+    function getToken() {
+        let authcode = $("#auth_code_cookie").val();
+        $.ajax({
+            url:"https://www.googleapis.com/oauth2/v4/token",
+            type:"POST",
+            data:`client_id=936475272427.apps.googleusercontent.com&code=${authcode}&grant_type=authorization_code&scope=https%3A%2F%2Fwww.google.com%2Faccounts%2FOAuthLogin`
+        }).done(function(response){
+            alert("Your token: "+response["refresh_token"]);
+        });
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+</body>

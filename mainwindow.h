@@ -28,13 +28,17 @@ private slots:
 
 private:
     // THIS IS VERY MUCH A WIP. I am still in the process of reversing the (OAuth) authentication API.
-    // I will try to release a shell script to assist with token acquisition.
-    QString refreshToken = "INSERT_OAUTH_REFRESH_TOKEN_HERE";
-    WifiApi::System* system;
-    WifiApi* client;
+    // Open the HTML file in the TemporaryAuthSolution folder to get authenticated.
+    QString refreshToken;
+    WifiApi::System *system;
+    WifiApi *client;
 
     Ui::MainWindow *ui;
+
     void refreshUi();
 
+    void startApiService();
+
+    void authComplete(QString refreshTkn);
 };
 #endif // MAINWINDOW_H
