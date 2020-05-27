@@ -27,8 +27,6 @@ private slots:
     void on_devicesBtn_clicked();
 
 private:
-    // THIS IS VERY MUCH A WIP. I am still in the process of reversing the (OAuth) authentication API.
-    // Open the HTML file in the TemporaryAuthSolution folder to get authenticated.
     QString refreshToken;
     WifiApi::System *system;
     WifiApi *client;
