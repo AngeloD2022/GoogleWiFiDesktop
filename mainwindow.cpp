@@ -68,9 +68,12 @@ void MainWindow::on_actionSign_In_triggered() {
 
 void MainWindow::on_actionServer_Tokens_triggered() {
     QMessageBox::information(this, "-", "Auth Token: " + accessTkn + "\nApiTkn: " + apiTkn);
-    QMessageBox::information(this, "", system->accessPoints[0]->properties->name + "\n\n" +
-                                       (system->accessPoints[0]->properties->isPrimaryPoint
-                                        ? "This is the primary point." : "This is not the primary point."));
+
+    // The code below was from a while ago for testing. Feel free to uncomment for api testing.
+
+//    QMessageBox::information(this, "", system->accessPoints[0]->properties->name + "\n\n" +
+//                                       (system->accessPoints[0]->properties->isPrimaryPoint
+//                                        ? "This is the primary point." : "This is not the primary point."));
 
 }
 

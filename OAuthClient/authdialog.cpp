@@ -135,14 +135,11 @@ void AuthDialog::saveRefreshToken(QNetworkReply *reply) {
 
         QString iv = QUuid::createUuid().toString();
 
-        qDebug() << "IV:" + iv;
-        qDebug() << "key:" + key;
 
         QByteArray keyHash = QCryptographicHash::hash(key.toLocal8Bit(), QCryptographicHash::Sha256);
         QByteArray ivHash = QCryptographicHash::hash(iv.toLocal8Bit(), QCryptographicHash::Md5);
         QByteArray enc = QAESEncryption::Crypt(QAESEncryption::AES_256, QAESEncryption::CBC,
                                                refreshTkn.toLocal8Bit(), keyHash, ivHash);
-        qDebug() << enc;
         QJsonObject file;
 
         file.insert("IV", QTextCodec::codecForMib(106)->toUnicode(ivHash.toBase64()));
