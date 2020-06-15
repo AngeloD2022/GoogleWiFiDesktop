@@ -17,6 +17,7 @@ DevicesDialog::DevicesDialog(WifiApi *client, QWidget *parent) :
     this->downLine = new QLineSeries();
     this->upLine = new QLineSeries();
     chartView = new QChartView();
+    connect(updateInfoTimer, SIGNAL(timeout()), this, SLOT(updateData()));
     refreshUi();
 }
 
@@ -43,7 +44,7 @@ void DevicesDialog::refreshUi()
 
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(chartView);
-    connect(updateInfoTimer,SIGNAL(timeout()),this,SLOT(updateData()));
+
     ui->statsBox->setLayout(layout);
     for(WifiApi::Station* e : system->devices){
 
