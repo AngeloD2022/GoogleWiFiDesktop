@@ -25,7 +25,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt5 COMPONENTS
+        Widgets
+        WebEngineWidgets
+        REQUIRED)
 
 if(ANDROID)
   add_library(GoogleWiFiDesktopClient SHARED
@@ -40,7 +43,10 @@ else()
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
-          GAPIS/OAuth2/RandomUtilities.h)
+          GAPIS/Auth/RandomUtilities.h
+          GAPIS/Auth/consentdialog.cpp
+          GAPIS/Auth/consentdialog.h
+          GAPIS/Auth/consentdialog.ui GAPIS/AccessCodeManager.cpp GAPIS/AccessCodeManager.h)
 endif()
 
-target_link_libraries(GoogleWiFiDesktopClient PRIVATE Qt5::Widgets)
+target_link_libraries(GoogleWiFiDesktopClient PRIVATE Qt5::Widgets Qt5::WebEngineWidgets)
