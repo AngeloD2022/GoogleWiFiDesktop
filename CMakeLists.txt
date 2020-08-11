@@ -40,7 +40,7 @@ else()
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
-  )
+          GAPIS/OAuth2/RandomUtilities.h)
 endif()
 
 target_link_libraries(GoogleWiFiDesktopClient PRIVATE Qt5::Widgets)
