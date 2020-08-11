@@ -4,6 +4,7 @@
 
 #ifndef GOOGLEWIFIDESKTOPCLIENT_RANDOMUTILITIES_H
 #define GOOGLEWIFIDESKTOPCLIENT_RANDOMUTILITIES_H
+
 #include <QString>
 #include <QList>
 #include <QUuid>
@@ -40,7 +41,7 @@ public:
     }
 
 
-    QString generateChallenge() {
+    static QString generateChallenge() {
         // 76 Random Bytes. That's it.
         QString result;
         for (int i = 0; i < 3; ++i) {
