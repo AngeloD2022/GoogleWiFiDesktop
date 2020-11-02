@@ -8,14 +8,21 @@ ConsentDialog::ConsentDialog(QWidget *parent) :
 
     ui->setupUi(this);
 
+    // Prevents focusing of main window
+    setWindowModality(Qt::ApplicationModal);
+
     // Information to satisfy "auth advice" request...
     deviceName = QSysInfo::machineHostName();
     deviceId = RandomUtilities::generateDeviceId();
     deviceChallenge = RandomUtilities::generateChallenge();
     clientState = RandomUtilities::generateClientState();
 
-    // Essentially, an embedded web browser...
+    // Embedded web browser...
     webEngineView = new QWebEngineView(this);
+
+    // This should fix the CEF 2FA issue...
+    webEngineView->page()->profile()->setHttpUserAgent("");
+    webEngineView->page()->profile()->setHttpUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko)");
 
     // Upon initialization of ConsentDialog, we will request for the consent URI.
     connect(this, &ConsentDialog::consentUriObtained, [=](QString uri) {
@@ -104,8 +111,8 @@ void ConsentDialog::loadConsentUri(QString uri) {
     QWebEngineHttpRequest request;
 
     // Disguise request as an apple product to satisfy uri parameter.
-    request.setHeader("User-Agent",
-                      "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko)");
+//    request.setHeader("User-Agent",
+//                      "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko)");
 
     request.setUrl(QUrl(uri));
 

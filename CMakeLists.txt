@@ -46,7 +46,7 @@ else()
           GAPIS/Auth/RandomUtilities.h
           GAPIS/Auth/consentdialog.cpp
           GAPIS/Auth/consentdialog.h
-          GAPIS/Auth/consentdialog.ui GAPIS/AccessCodeManager.cpp GAPIS/AccessCodeManager.h)
+          GAPIS/Auth/consentdialog.ui)
 endif()
 
 target_link_libraries(GoogleWiFiDesktopClient PRIVATE Qt5::Widgets Qt5::WebEngineWidgets)
