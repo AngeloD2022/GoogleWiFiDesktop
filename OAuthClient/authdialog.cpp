@@ -8,6 +8,10 @@ AuthDialog::AuthDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setFocus();
 
+    // 2FA Bugfix
+    view->page()->profile()->setHttpUserAgent("");
+    view->page()->profile()->setHttpUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko)");
+
     doLoginPageRequest();
 
 }
@@ -81,10 +85,6 @@ void AuthDialog::loginPageRequestComplete(QNetworkReply *reply) {
 void AuthDialog::launchWebEngine(QString authUri) {
     ui->gridLayout->removeWidget(ui->progressBar);
     QWebEngineHttpRequest authRequest;
-
-    // Disguise as Apple product...
-    authRequest.setHeader("User-Agent",
-                          "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko)");
 
     authRequest.setUrl(QUrl(authUri));
     ui->gridLayout->addWidget(view, 0, 0);

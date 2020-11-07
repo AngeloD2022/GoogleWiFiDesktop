@@ -3,9 +3,9 @@
 
 #include <QDialog>
 #include <QtWebEngineWidgets>
-//#include "HTTP/requestmanager.h"
+
 #include <QtNetwork>
-//#include <QtWebEngineCore>
+
 #include <QSysInfo>
 #include "AuthenticationUtilities.h"
 #include "Encryption/qaesencryption.h"
