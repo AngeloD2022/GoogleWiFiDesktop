@@ -1,6 +1,8 @@
 #include <GAPIS/Auth/consentdialog.h>
+#include <GAPIS/credentials.h>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -8,13 +10,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ConsentDialog *consentDialog = new ConsentDialog();
-    consentDialog->show();
-    consentDialog->setWindowModality(Qt::ApplicationModal);
+    if(!Credentials::credential_exists("user_refresh_token")){
+        ConsentDialog *consentDialog = new ConsentDialog();
+        consentDialog->show();
+        consentDialog->setWindowModality(Qt::ApplicationModal);
 
-    connect(consentDialog, &ConsentDialog::authorizationComplete,[=](QString refreshToken){
-        QMessageBox::information(this,"Success","Refresh Token: "+refreshToken);
-    });
+        connect(consentDialog, &ConsentDialog::authorizationComplete,[=](QString refreshToken){
+            // Store refresh token in the native OS keychain.
+            Credentials::store_refresh_token("user_refresh_token",refreshToken);
+        });
+    }
+
 
 }
 

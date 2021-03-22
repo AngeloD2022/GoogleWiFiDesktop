@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.5)
 
 project(GoogleWiFiDesktopClient LANGUAGES CXX)
 
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_PREFIX_PATH "/Users/angelodeluca/Qt/5.15.0/clang_64/lib/cmake")
+set(CMAKE_PREFIX_PATH "/Users/angelodeluca/Qt/5.15.2/clang_64/lib/cmake")
+
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -24,6 +26,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #            ${CMAKE_CURRENT_SOURCE_DIR}/path/to/libssl.so)
 #    endif()
 #endif()
+
+include_directories(/usr/local/include/qt5keychain)
 
 find_package(Qt5 COMPONENTS
         Widgets
@@ -46,7 +50,11 @@ else()
           GAPIS/Auth/RandomUtilities.h
           GAPIS/Auth/consentdialog.cpp
           GAPIS/Auth/consentdialog.h
-          GAPIS/Auth/consentdialog.ui)
+          GAPIS/Auth/consentdialog.ui GAPIS/credentials.h
+          )
 endif()
+
+
+target_link_libraries(GoogleWiFiDesktopClient PRIVATE /usr/local/lib/libqt5keychain.0.12.90.dylib)
 
 target_link_libraries(GoogleWiFiDesktopClient PRIVATE Qt5::Widgets Qt5::WebEngineWidgets)

@@ -31,6 +31,7 @@ ConsentDialog::ConsentDialog(QWidget *parent) :
         ui->gridLayout->addWidget(webEngineView);
         loadConsentUri(uri);
     });
+
     QWebEngineCookieStore *cookies = webEngineView->page()->profile()->cookieStore();
     cookies->loadAllCookies();
     connect(cookies, &QWebEngineCookieStore::cookieAdded, this, &ConsentDialog::webEngineCookieAdded);
@@ -118,14 +119,12 @@ void ConsentDialog::loadConsentUri(QString uri) {
 
     // Tell the WebEngineView to load the request.
     webEngineView->load(request);
-
-
 }
 
 void ConsentDialog::webEngineCookieAdded(QNetworkCookie cookie) {
-    qDebug() << "Cookie:"+cookie.name()+"="+cookie.value();
+//    qDebug() << "Cookie:"+cookie.name()+"="+cookie.value();
     if (cookie.name() == "oauth_code") {
-        qDebug() << "cookie found";
+//        qDebug() << "cookie found";
         // exchange the oauth code cookie for a refresh token.
         getRefreshToken(cookie.value());
     }
@@ -133,7 +132,7 @@ void ConsentDialog::webEngineCookieAdded(QNetworkCookie cookie) {
 
 void ConsentDialog::getRefreshToken(QString oauthCode) {
     QUrl url(endpoints.refreshTokenExchange);
-    qDebug() << oauthCode;
+//    qDebug() << oauthCode;
     // Configure query...
     QUrlQuery query;
     query.addQueryItem("client_id", config.mediatorClientId);
