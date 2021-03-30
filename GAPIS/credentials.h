@@ -20,7 +20,7 @@ using namespace QKeychain;
 class Credentials {
 
 public:
-    static int store_refresh_token(QString key, QString password){
+    static int store(QString key, QString password){
         WritePasswordJob job(QLatin1String(app_identity));
         job.setAutoDelete(false);
         job.setKey(key);
@@ -37,7 +37,7 @@ public:
         return 1;
     }
 
-    static QString read_refresh_token(QString key){
+    static QString read(QString key){
 
         ReadPasswordJob job(app_identity);
         job.setAutoDelete(false);
@@ -54,21 +54,6 @@ public:
         }
 
         return job.textData();
-    }
-
-    static int credential_exists(QString key){
-        ReadPasswordJob job(app_identity);
-        job.setAutoDelete(false);
-        job.setKey(key);
-
-        QEventLoop loop;
-        job.connect(&job, &QKeychain::Job::finished, &loop, &QEventLoop::quit);
-        job.start();
-        loop.exec();
-
-        if(job.error() == QKeychain::EntryNotFound)
-            return 0;
-        return 1;
     }
 
 
