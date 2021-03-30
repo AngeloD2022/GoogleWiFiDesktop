@@ -51,7 +51,8 @@ else()
           GAPIS/Auth/consentdialog.cpp
           GAPIS/Auth/consentdialog.h
           GAPIS/Auth/consentdialog.ui GAPIS/credentials.h
-          )
+          GAPIS/wifi/SessionContext.h GAPIS/wifi/SessionAuthorize.h
+          GAPIS/wifi/SessionContext.cpp)
 endif()
 
 
