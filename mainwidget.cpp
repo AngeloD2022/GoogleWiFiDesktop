@@ -59,7 +59,30 @@ void MainWidget::setupInterface() {
 
 
 void MainWidget::restartBtnClicked() {
-    QMessageBox::information(this, "", "Restart clicked...");
+
+    // Show a dialog confirming the action...
+    QMessageBox::StandardButton response = QMessageBox::question(this,
+                                                                 "Restart network?",
+                                                                 "Are you sure you want to restart the network?",
+                                                                 QMessageBox::Ok | QMessageBox::Cancel
+    );
+
+    // Execute a network restart if given confirmation...
+    if (response == QMessageBox::Ok) {
+
+        // Call the API endpoint to restart the network...
+
+        FoyerClient *client = new FoyerClient();
+
+        connect(client, &FoyerClient::finished, [=](QNetworkReply *reply) {
+            // TODO: Check for errors with the reply
+            QMessageBox::information(this, "Success", "The network has successfully restarted.");
+        });
+
+        client->post(QNetworkRequest(
+                QUrl("https://googlehomefoyer-pa.googleapis.com/v2/groups/" + fu8(system.get_id()) + "/reboot")), "");
+    }
+
 }
 
 
