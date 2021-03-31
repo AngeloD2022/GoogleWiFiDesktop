@@ -49,17 +49,17 @@ if(ANDROID)
   )
 else()
   add_executable(GoogleWiFiDesktopClient
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
+          main.cpp
+          mainwindow.cpp
+          mainwindow.h
+          mainwindow.ui
           GAPIS/Auth/RandomUtilities.h
           GAPIS/Auth/consentdialog.cpp
           GAPIS/Auth/consentdialog.h
           GAPIS/Auth/consentdialog.ui GAPIS/credentials.h
           GAPIS/wifi/SessionContext.h GAPIS/wifi/SessionAuthorize.h
           GAPIS/wifi/SessionContext.cpp GAPIS/jsontypes/WifiSystem.h
-          GAPIS/jsontypes/json.hpp GAPIS/wifi/FoyerClient.h systemselectiondialog.cpp systemselectiondialog.h systemselectiondialog.ui mainwidget.cpp mainwidget.h mainwidget.ui)
+          GAPIS/jsontypes/json.hpp GAPIS/wifi/FoyerClient.h systemselectiondialog.cpp systemselectiondialog.h systemselectiondialog.ui mainwidget.cpp mainwidget.h mainwidget.ui GAPIS/jsontypes/SystemDevices.h)
 endif()
 
 if(Boost_FOUND)

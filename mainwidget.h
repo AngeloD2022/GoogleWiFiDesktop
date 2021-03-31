@@ -23,10 +23,21 @@ public:
 
     ~MainWidget() override;
 
+
 private:
     Ui::MainWidget *ui;
 
+    void restartBtnClicked();
+
     void setupInterface();
+
+    void haltTrafficBtnClicked();
+
+    void devicesBtnClicked();
+
+    void routersBtnClicked();
+
+    void prefBtnClicked();
 };
 
 #endif //GOOGLEWIFIDESKTOPCLIENT_MAINWIDGET_H
