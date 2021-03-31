@@ -4,7 +4,7 @@ project(GoogleWiFiDesktopClient LANGUAGES CXX)
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_PREFIX_PATH "/Users/angelodeluca/Qt/5.15.2/clang_64/lib/cmake")
+set(CMAKE_PREFIX_PATH "/Users/angelodeluca/Qt/5.15.2/clang_64/lib/cmake;/usr/local/Cellar/boost/1.75.0_2/lib/cmake")
 
 
 set(CMAKE_AUTOUIC ON)
@@ -28,11 +28,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #endif()
 
 include_directories(/usr/local/include/qt5keychain)
+#include_directories(/usr/local/Cellar/boost/1.75.0_2/include/boost)
 
 find_package(Qt5 COMPONENTS
         Widgets
         WebEngineWidgets
         REQUIRED)
+
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+find_package(boost 1.75.0 COMPONENTS optional)
 
 if(ANDROID)
   add_library(GoogleWiFiDesktopClient SHARED
@@ -52,10 +58,16 @@ else()
           GAPIS/Auth/consentdialog.h
           GAPIS/Auth/consentdialog.ui GAPIS/credentials.h
           GAPIS/wifi/SessionContext.h GAPIS/wifi/SessionAuthorize.h
-          GAPIS/wifi/SessionContext.cpp)
+          GAPIS/wifi/SessionContext.cpp GAPIS/jsontypes/WifiSystem.h
+          GAPIS/jsontypes/json.hpp GAPIS/wifi/FoyerClient.h systemselectiondialog.cpp systemselectiondialog.h systemselectiondialog.ui mainwidget.cpp mainwidget.h mainwidget.ui)
 endif()
 
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+  target_link_libraries(GoogleWiFiDesktopClient ${Boost_LIBRARIES})
+endif()
 
 target_link_libraries(GoogleWiFiDesktopClient PRIVATE /usr/local/lib/libqt5keychain.0.12.90.dylib)
+#target_link_libraries(GoogleWiFiDesktopClient PRIVATE /usr/local/Cellar/boost/cmake)
 
 target_link_libraries(GoogleWiFiDesktopClient PRIVATE Qt5::Widgets Qt5::WebEngineWidgets)

@@ -131,8 +131,10 @@ void ConsentDialog::webEngineCookieAdded(QNetworkCookie cookie) {
 }
 
 void ConsentDialog::getRefreshToken(QString oauthCode) {
+
     QUrl url(endpoints.refreshTokenExchange);
-//    qDebug() << oauthCode;
+
+    // qDebug() << oauthCode;
     // Configure query...
     QUrlQuery query;
     query.addQueryItem("client_id", config.mediatorClientId);

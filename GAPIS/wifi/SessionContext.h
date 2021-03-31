@@ -7,6 +7,8 @@
 
 #endif //GOOGLEWIFIDESKTOPCLIENT_SESSIONCONTEXT_H
 
+#pragma once
+
 #include <QString>
 #include <QtNetwork>
 
@@ -20,9 +22,10 @@ public:
     };
 
     static QString at_content;
-    static QString ft_content;
-
     static int at_exp;
+
+    static QString ft_content;
     static int ft_exp;
 
+    static QString systemId;
 };

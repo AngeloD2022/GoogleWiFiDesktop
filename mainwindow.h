@@ -17,5 +17,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    void loadInterface();
 };
 #endif // MAINWINDOW_H

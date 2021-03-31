@@ -3,7 +3,10 @@
 //
 #import "SessionContext.h"
 
-int SessionContext::at_exp = 0;
-int SessionContext::ft_exp = 0;
 QString SessionContext::at_content = "";
+int SessionContext::at_exp = 0;
+
 QString SessionContext::ft_content = "";
+int SessionContext::ft_exp = 0;
+
+QString SessionContext::systemId = "";

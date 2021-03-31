@@ -13,22 +13,22 @@
 #include "SessionContext.h"
 
 
-class SessionAuthorize : public QObject{
+class SessionAuthorize : public QObject {
 Q_OBJECT
 
 public:
 
-    explicit SessionAuthorize(QObject *parent = nullptr) : QObject(parent){};
+    explicit SessionAuthorize(QObject *parent = nullptr) : QObject(parent) {};
 
 
-    void authorize_ctx(QString refresh_token){
+    void authorize_ctx(QString refresh_token) {
 
         QUrl access_endpoint("https://www.googleapis.com/oauth2/v4/token");
 
         QUrlQuery query;
 
-        query.addQueryItem("client_id","936475272427.apps.googleusercontent.com");
-        query.addQueryItem("grant_type","refresh_token");
+        query.addQueryItem("client_id", "936475272427.apps.googleusercontent.com");
+        query.addQueryItem("grant_type", "refresh_token");
         query.addQueryItem("refresh_token", refresh_token);
 
         access_endpoint.setQuery(query);
@@ -40,18 +40,20 @@ public:
 
         QNetworkAccessManager *manager = new QNetworkAccessManager(parent());
 
-        connect(manager, &QNetworkAccessManager::finished, [this](QNetworkReply *reply){
+        connect(manager, &QNetworkAccessManager::finished, [this](QNetworkReply *reply) {
             second_step(reply);
         });
 
-        manager->post(req,"");
+        manager->post(req, "");
     }
-    signals:
+
+signals:
+
     void auth_finished();
 
 private:
 
-    void second_step(QNetworkReply *reply){
+    void second_step(QNetworkReply *reply) {
         // first, get the access token..
 
         QJsonObject at_object = QJsonDocument::fromJson(reply->readAll()).object();
@@ -67,32 +69,33 @@ private:
 
         QUrlQuery query;
 
-        query.addQueryItem("app_id","com.google.OnHub");
-        query.addQueryItem("client_id","586698244315-vc96jg3mn4nap78iir799fc2ll3rk18s.apps.googleusercontent.com");
-        query.addQueryItem("hl","en-US");
-        query.addQueryItem("lib_ver","3.3");
-        query.addQueryItem("response_type","token");
-        query.addQueryItem("scope","https://www.googleapis.com/auth/accesspoints https://www.googleapis.com/auth/clouddevices");
+        query.addQueryItem("app_id", "com.google.OnHub");
+        query.addQueryItem("client_id", "586698244315-vc96jg3mn4nap78iir799fc2ll3rk18s.apps.googleusercontent.com");
+        query.addQueryItem("hl", "en-US");
+        query.addQueryItem("lib_ver", "3.3");
+        query.addQueryItem("response_type", "token");
+        query.addQueryItem("scope",
+                           "https://www.googleapis.com/auth/accesspoints https://www.googleapis.com/auth/clouddevices");
 
         token_endpoint.setQuery(query);
 
         QNetworkRequest req;
 
-        req.setRawHeader("Authorization",QString("Bearer " + token).toUtf8());
+        req.setRawHeader("Authorization", QString("Bearer " + token).toUtf8());
         req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
         req.setUrl(token_endpoint);
 
         QNetworkAccessManager *manager = new QNetworkAccessManager(parent());
 
         // When done, set the other shared value and emit signal of completion...
-        connect(manager, &QNetworkAccessManager::finished, [=](QNetworkReply *reply){
+        connect(manager, &QNetworkAccessManager::finished, [=](QNetworkReply *reply) {
             get_foyer(reply);
         });
 
-        manager->post(req,"");
+        manager->post(req, "");
     }
 
-    void get_foyer(QNetworkReply *reply){
+    void get_foyer(QNetworkReply *reply) {
         QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
 
         SessionContext::ft_content = obj["token"].toString();
@@ -103,4 +106,5 @@ private:
 
 
 };
+
 #endif //GOOGLEWIFIDESKTOPCLIENT_SESSIONAUTHORIZE_H
