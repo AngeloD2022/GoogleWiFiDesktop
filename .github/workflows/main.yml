@@ -1,0 +1,48 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2019, ubuntu-18.04, macos-10.15]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Visual Studio cl.exe
+        uses: ilammy/msvc-dev-cmd@v1
+        if: ${{ runner.os == 'Windows' }}
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          modules: qtcharts qtwebengine qtwebenginewidgets
+
+      - name: Setup project
+        run: qmake  -config release OnHubDesktopClient.pro DESTDIR=build
+
+      - name: Build with make
+        run: make
+        if: ${{ runner.os != 'Windows' }}
+
+      - name: Build with nmake
+        run: nmake
+        if: ${{ runner.os == 'Windows' }}
+
+      - name: Bundle macOS dependencies
+        run: macdeployqt build/OnHubDesktopClient.app
+        if: ${{ runner.os == 'macOS' }}
+
+      - name: Bundle Windows dependencies
+        run: windeployqt build/OnHubDesktopClient.exe
+        if: ${{ runner.os == 'Windows' }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.os }}
+          path: build
