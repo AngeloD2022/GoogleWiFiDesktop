@@ -1,73 +1,47 @@
 cmake_minimum_required(VERSION 3.5)
+project(GoogleWiFiDesktop VERSION 0.1 LANGUAGES CXX)
 
-project(GoogleWiFiDesktopClient LANGUAGES CXX)
-
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_PREFIX_PATH "/Users/angelodeluca/Qt/5.15.2/clang_64/lib/cmake;/usr/local/Cellar/boost/1.75.0_2/lib/cmake")
-
-
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# Replace this with your qt cmake prefix path...
+set(CMAKE_PREFIX_PATH /Users/angelodeluca/Qt/6.2.1/macos/lib/cmake)
 
-# QtCreator supports the following variables for Android, which are identical to qmake Android variables.
-# Check http://doc.qt.io/qt-5/deployment-android.html for more information.
-# They need to be set before the find_package(Qt5 ...) call.
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
-#if(ANDROID)
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-#    if (ANDROID_ABI STREQUAL "armeabi-v7a")
-#        set(ANDROID_EXTRA_LIBS
-#            ${CMAKE_CURRENT_SOURCE_DIR}/path/to/libcrypto.so
-#            ${CMAKE_CURRENT_SOURCE_DIR}/path/to/libssl.so)
-#    endif()
-#endif()
+set(GWD_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
+set(GWD_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 
-include_directories(/usr/local/include/qt5keychain)
-#include_directories(/usr/local/Cellar/boost/1.75.0_2/include/boost)
+include_directories(${GWD_INCLUDE_DIR})
 
-find_package(Qt5 COMPONENTS
-        Widgets
-        WebEngineWidgets
-        REQUIRED)
+file(GLOB_RECURSE GWD_HEADERS
+        ${GWD_SOURCE_DIR}/*.h
+        ${GWD_SOURCE_DIR}/*.hpp
+        )
 
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(boost 1.75.0 COMPONENTS optional)
+file(GLOB_RECURSE GWD_SOURCES
+        ${GWD_SOURCE_DIR}/*.cpp
+        ${GWD_SOURCE_DIR}/*.c
+        )
 
-if(ANDROID)
-  add_library(GoogleWiFiDesktopClient SHARED
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
-  )
-else()
-  add_executable(GoogleWiFiDesktopClient
-          main.cpp
-          mainwindow.cpp
-          mainwindow.h
-          mainwindow.ui
-          GAPIS/Auth/RandomUtilities.h
-          GAPIS/Auth/consentdialog.cpp
-          GAPIS/Auth/consentdialog.h
-          GAPIS/Auth/consentdialog.ui GAPIS/credentials.h
-          GAPIS/wifi/SessionContext.h GAPIS/wifi/SessionAuthorize.h
-          GAPIS/wifi/SessionContext.cpp GAPIS/jsontypes/WifiSystem.h
-          GAPIS/jsontypes/json.hpp GAPIS/wifi/FoyerClient.h systemselectiondialog.cpp systemselectiondialog.h systemselectiondialog.ui mainwidget.cpp mainwidget.h mainwidget.ui GAPIS/jsontypes/SystemDevices.h)
+add_executable(gwd ${GWD_HEADERS} ${GWD_SOURCES})
+
+target_link_libraries(gwd PRIVATE
+        Qt${QT_VERSION_MAJOR}::Widgets
+        )
+
+set_target_properties(gwd PROPERTIES
+        MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+        )
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(gwd)
 endif()
-
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS})
-  target_link_libraries(GoogleWiFiDesktopClient ${Boost_LIBRARIES})
-endif()
-
-target_link_libraries(GoogleWiFiDesktopClient PRIVATE /usr/local/lib/libqt5keychain.0.12.90.dylib)
-#target_link_libraries(GoogleWiFiDesktopClient PRIVATE /usr/local/Cellar/boost/cmake)
-
-target_link_libraries(GoogleWiFiDesktopClient PRIVATE Qt5::Widgets Qt5::WebEngineWidgets)
