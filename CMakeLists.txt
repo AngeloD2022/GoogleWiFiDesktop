@@ -18,30 +18,48 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 set(GWD_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 set(GWD_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 
-include_directories(${GWD_INCLUDE_DIR})
 
-file(GLOB_RECURSE GWD_HEADERS
-        ${GWD_SOURCE_DIR}/*.h
-        ${GWD_SOURCE_DIR}/*.hpp
+
+# Core Google WiFi API Target
+file(GLOB_RECURSE GWD_CORE_HEADERS
+        ${GWD_SOURCE_DIR}/core/*.h
+        ${GWD_SOURCE_DIR}/core/*.hpp
         )
 
-file(GLOB_RECURSE GWD_SOURCES
-        ${GWD_SOURCE_DIR}/*.cpp
-        ${GWD_SOURCE_DIR}/*.c
+file(GLOB_RECURSE GWD_CORE_SOURCES
+        ${GWD_SOURCE_DIR}/core/*.cpp
+        ${GWD_SOURCE_DIR}/core/*.c
         )
 
-add_executable(gwd ${GWD_HEADERS} ${GWD_SOURCES})
+add_library(gwd_core ${GWD_CORE_HEADERS} ${GWD_CORE_SOURCES})
 
-target_link_libraries(gwd PRIVATE
+# Google WiFi Desktop -- User Interface Application Target
+file(GLOB_RECURSE GWD_UI_HEADERS
+        ${GWD_SOURCE_DIR}/ui/*.h
+        ${GWD_SOURCE_DIR}/ui/*.hpp
+        )
+
+file(GLOB_RECURSE GWD_UI_SOURCES
+        ${GWD_SOURCE_DIR}/ui/*.cpp
+        ${GWD_SOURCE_DIR}/ui/*.c
+        )
+
+add_executable(gwd_ui ${GWD_UI_HEADERS} ${GWD_UI_SOURCES})
+target_include_directories(gwd_ui PUBLIC ${GWD_INCLUDE_DIR})
+target_link_libraries(gwd_ui PRIVATE
+        gwd_core
         Qt${QT_VERSION_MAJOR}::Widgets
         )
 
-set_target_properties(gwd PROPERTIES
-        MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-        )
+if(APPLE)
+    set_target_properties(gwd_ui PROPERTIES
+            MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+            MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+            MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+            )
+endif()
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(gwd)
+    qt_finalize_executable(gwd_ui)
 endif()
+
