@@ -12,12 +12,16 @@ set(CMAKE_AUTORCC ON)
 # Replace this with your qt cmake prefix path...
 set(CMAKE_PREFIX_PATH /Users/angelodeluca/Qt/6.2.1/macos/lib/cmake)
 
+
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 set(GWD_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 set(GWD_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 
+# Dependency: QtKeychain
+SET(BUILD_WITH_QT6 ON)
+add_subdirectory(${GWD_INCLUDE_DIR}/qtkeychain)
 
 
 # Core Google WiFi API Target
@@ -48,6 +52,7 @@ add_executable(gwd_ui ${GWD_UI_HEADERS} ${GWD_UI_SOURCES})
 target_include_directories(gwd_ui PUBLIC ${GWD_INCLUDE_DIR})
 target_link_libraries(gwd_ui PRIVATE
         gwd_core
+        ${QTKEYCHAIN_TARGET_NAME}
         Qt${QT_VERSION_MAJOR}::Widgets
         )
 
