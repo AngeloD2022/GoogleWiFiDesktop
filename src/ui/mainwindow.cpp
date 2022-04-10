@@ -11,6 +11,10 @@ namespace gwd {
     MainWindow::MainWindow(QWidget *parent) :
             QMainWindow(parent), ui(new Ui::MainWindow) {
         ui->setupUi(this);
+
+        // Check whether the user is authenticated...
+
+
     }
 
     MainWindow::~MainWindow() {
