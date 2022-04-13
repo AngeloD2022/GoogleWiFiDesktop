@@ -36,28 +36,29 @@ file(GLOB_RECURSE GWD_CORE_SOURCES
         )
 
 add_library(gwd_core ${GWD_CORE_HEADERS} ${GWD_CORE_SOURCES})
+target_link_libraries(gwd_core Qt${QT_VERSION_MAJOR}::Widgets)
 
 # Google WiFi Desktop -- User Interface Application Target
-file(GLOB_RECURSE GWD_UI_HEADERS
-        ${GWD_SOURCE_DIR}/ui/*.h
-        ${GWD_SOURCE_DIR}/ui/*.hpp
+file(GLOB_RECURSE GWD_APP_HEADERS
+        ${GWD_SOURCE_DIR}/app/*.h
+        ${GWD_SOURCE_DIR}/app/*.hpp
         )
 
-file(GLOB_RECURSE GWD_UI_SOURCES
-        ${GWD_SOURCE_DIR}/ui/*.cpp
-        ${GWD_SOURCE_DIR}/ui/*.c
+file(GLOB_RECURSE GWD_APP_SOURCES
+        ${GWD_SOURCE_DIR}/app/*.cpp
+        ${GWD_SOURCE_DIR}/app/*.c
         )
 
-add_executable(gwd_ui ${GWD_UI_HEADERS} ${GWD_UI_SOURCES})
-target_include_directories(gwd_ui PUBLIC ${GWD_INCLUDE_DIR})
-target_link_libraries(gwd_ui PRIVATE
+add_executable(gwd_app ${GWD_APP_HEADERS} ${GWD_APP_SOURCES})
+target_include_directories(gwd_app PUBLIC ${GWD_INCLUDE_DIR})
+target_link_libraries(gwd_app PRIVATE
         gwd_core
-        ${QTKEYCHAIN_TARGET_NAME}
+        qt6keychain
         Qt${QT_VERSION_MAJOR}::Widgets
         )
 
 if(APPLE)
-    set_target_properties(gwd_ui PROPERTIES
+    set_target_properties(gwd_app PROPERTIES
             MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
             MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
             MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -65,6 +66,6 @@ if(APPLE)
 endif()
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(gwd_ui)
+    qt_finalize_executable(gwd_app)
 endif()
 
