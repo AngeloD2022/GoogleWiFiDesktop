@@ -39,7 +39,7 @@ QList<gwd::auth::GWDUser *> gwd::get_users() {
     return result;
 }
 
-void gwd::store_secure(QString id, QString value, void callback(bool)) {
+void gwd::store_secure(QString id, QString value, std::function<void(bool)> callback) {
     QKeychain::WritePasswordJob job(app_identifier);
     job.setAutoDelete(false);
     job.setKey(id);
@@ -53,7 +53,7 @@ void gwd::store_secure(QString id, QString value, void callback(bool)) {
     job.start();
 }
 
-void gwd::read_secure(QString id, void callback(QString)) {
+void gwd::read_secure(QString id, std::function<void(QString)> callback) {
 
     QKeychain::ReadPasswordJob job(app_identifier);
     job.setKey(id);

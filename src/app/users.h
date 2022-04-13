@@ -11,9 +11,9 @@ namespace gwd {
 
     QList<gwd::auth::GWDUser *> get_users();
 
-    void store_secure(QString id, QString value, void callback(bool));
+    void store_secure(QString id, QString value, std::function<void(bool)> callback);
 
-    void read_secure(QString id, void callback(QString));
+    void read_secure(QString id, std::function<void(QString)> callback);
 }
 
 #endif //GOOGLEWIFIDESKTOP_USERS_H

@@ -13,8 +13,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_PREFIX_PATH /Users/angelodeluca/Qt/6.2.1/macos/lib/cmake)
 
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Network REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Network REQUIRED)
 
 set(GWD_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 set(GWD_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
@@ -36,7 +36,10 @@ file(GLOB_RECURSE GWD_CORE_SOURCES
         )
 
 add_library(gwd_core ${GWD_CORE_HEADERS} ${GWD_CORE_SOURCES})
-target_link_libraries(gwd_core Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(gwd_core
+        Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Network
+        )
 
 # Google WiFi Desktop -- User Interface Application Target
 file(GLOB_RECURSE GWD_APP_HEADERS
